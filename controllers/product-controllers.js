@@ -2,7 +2,6 @@ const Product = require("../models/product");
 
 //----- Create New Product-----
 const newProduct = async (req, res, next) => {
-    console.log(req.body);
   const {
     name,
     price,
@@ -38,4 +37,21 @@ try {
 
 };
 
+// Get All Products
+const getAllProducts = async(req,res)=>{
+    let products;
+    try{
+        products = await Product.find();
+    }catch(err){
+        console.log(err);
+        return res.status(500).json({ message: "Fetching Products Failed" });
+    }
+    res.status(200).json({
+        success:true,
+        count:products.length,
+        products:products.map((product)=>product.toObject()),
+    })
+}
+
 exports.newProduct = newProduct;
+exports.getAllProducts = getAllProducts
