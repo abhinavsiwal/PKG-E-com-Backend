@@ -1,9 +1,41 @@
+const Product = require("../models/product");
 
-const getProducts = (req,res,next)=>{
-    res.status(200).json({
-        success:true,
-        message:"This route will show all products in Database",
+//----- Create New Product-----
+const newProduct = async (req, res, next) => {
+    console.log(req.body);
+  const {
+    name,
+    price,
+    description,
+    ratings,
+    category,
+    seller,
+    stock,
+    numOfReviews,
+    reviews,
+  } = req.body;
+try {
+    const newProduct = new Product({
+        name,
+        price,
+        description,
+        ratings,
+        category,
+        seller,
+        stock,
+        numOfReviews,
+        reviews,
     })
+    const product = await newProduct.save();
+    res.status(201).json({
+        success:true,
+        product,
+    })
+} catch (err) {
+    console.log(err);
+    return res.status(400).json({message:"Adding Product Failed"})
 }
 
-exports.getProducts = getProducts;
+};
+
+exports.newProduct = newProduct;
