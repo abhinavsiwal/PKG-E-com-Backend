@@ -68,6 +68,39 @@ const getProductById = async (req, res) => {
   res.json(product);
 };
 
+// Update Prouduct by Product Id
+const updateProduct = async(req,res,next)=>{
+  const productId = req.params.id;
+  let product;
+  try{
+    product = await Product.findById(productId);
+  }catch(err){
+    console.log(err);
+    return res
+    .status(500)
+    .json({ message: "Something Went Wrong in Update Product" });
+
+  }
+  if(!product){
+    return res
+      .status(500)
+      .json({ message: "Could not find product for this id" });
+  }
+  try {
+    product = await Product.findByIdAndUpdate(productId,req.body,{
+      new: true,
+      runValidators: true,
+      useFindAndModify: false,
+    })
+  } catch (err) {
+    return res
+    .status(500)
+    .json({ message: "Something Went Wrong in Update Product" });
+  }
+  res.status(200).json(product.toObject());
+}
+
 exports.newProduct = newProduct;
 exports.getAllProducts = getAllProducts;
 exports.getProductById = getProductById;
+exports.updateProduct = updateProduct;
