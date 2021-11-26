@@ -100,7 +100,35 @@ const updateProduct = async(req,res,next)=>{
   res.status(200).json(product.toObject());
 }
 
+// Delete Product
+const deleteProduct = async(req,res,next)=>{
+  const productId = req.params.id;
+  let product;
+  try{
+    product = await Product.findById(productId);
+  }catch(err){
+    console.log(err);
+    return res
+    .status(500)
+    .json({ message: "Something Went Wrong in Delete Product" });
+
+  }
+  if(!product){
+    return res
+      .status(500)
+      .json({ message: "Could not find product for this id" });
+  }
+  try {
+    await product.remove();
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "Product could not be deleted" });
+  }
+  res.status(200).json({ message: "Product deleted Successfully" });
+}
+
 exports.newProduct = newProduct;
 exports.getAllProducts = getAllProducts;
 exports.getProductById = getProductById;
 exports.updateProduct = updateProduct;
+exports.deleteProduct = deleteProduct;
